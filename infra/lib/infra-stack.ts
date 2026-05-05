@@ -3,40 +3,36 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as amplify from 'aws-cdk-lib/aws-amplify';
-import * as path from 'path';
+import {Platform} from 'aws-cdk-lib/aws-ecr-assets';
 import {Construct} from 'constructs';
 
 export class InfraStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        const helloWorldFunction = new lambda.Function(this, 'HelloWorldFunction', {
-            runtime: lambda.Runtime.PYTHON_3_13,
-            architecture: lambda.Architecture.ARM_64,
-            handler: 'handler.handler',
-            code: lambda.Code.fromAsset(
-                path.join(__dirname, '../../backend/lambda/hello_world'),
-                {
-                    bundling: {
-                        image: lambda.Runtime.PYTHON_3_13.bundlingImage,
-                        platform: 'linux/arm64',
-                        command: [
-                            'bash', '-c',
-                            'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output',
-                        ],
-                    },
-                }
-            ),
-            functionName: 'hello-world',
+        // CPAK Inference Lambda (container-based for PyTorch)
+        const inferenceFunction = new lambda.DockerImageFunction(this, 'InferenceFunction', {
+            code: lambda.DockerImageCode.fromImageAsset('../backend/lambda/inference', {
+                platform: Platform.LINUX_AMD64,
+            }),
+            architecture: lambda.Architecture.X86_64,
+            memorySize: 4096,
+            timeout: cdk.Duration.seconds(29),
+            functionName: 'cpak-inference',
         });
 
         const api = new apigateway.RestApi(this, 'TemplateAPI', {
-            restApiName: 'Template API',
-            description: 'API Gateway',
+            restApiName: 'CPAK API',
+            description: 'CPAK Measurement API',
+            defaultCorsPreflightOptions: {
+                allowOrigins: apigateway.Cors.ALL_ORIGINS,
+                allowMethods: ['GET', 'POST', 'OPTIONS'],
+                allowHeaders: ['Content-Type', 'Authorization'],
+            },
         });
 
-        const helloResource = api.root.addResource('hello');
-        helloResource.addMethod('GET', new apigateway.LambdaIntegration(helloWorldFunction));
+        const inferenceResource = api.root.addResource('inference');
+        inferenceResource.addMethod('POST', new apigateway.LambdaIntegration(inferenceFunction));
 
         new cdk.CfnOutput(this, 'ApiUrl', {
             value: api.url,
