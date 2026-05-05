@@ -1,0 +1,8 @@
+/.venv/
+/.idea
+/frontend/.env
+/.claude/
+/frontend/dist/
+/frontend/node_modules/
+/infra/package-lock.json
+/frontend/package-lock.json
