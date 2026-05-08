@@ -12,7 +12,7 @@ set -euo pipefail
 #
 
 # Configuration
-STACK_NAME="TemplateInfraStack"
+STACK_NAME="CpakInfraStack"
 ENV_FILE=".env"
 ENV_BACKUP=".env.backup"
 
