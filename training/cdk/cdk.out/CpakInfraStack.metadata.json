@@ -1,0 +1,370 @@
+{
+  "/CpakInfraStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/BucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:170:5)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/SageMakerRoleArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SageMakerRoleArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:176:5)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ApiUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:182:5)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/AmplifyAppId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AmplifyAppId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:188:5)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/AmplifyUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AmplifyUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:194:5)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/CpakInfraStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/CpakInfraStack/CpakBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CpakBucketF5DE37EF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:20:20)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/SageMakerExecutionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SageMakerExecutionRole7843F3B8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:37:27)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsApiLambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsApiLambda94E0698A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:102:27)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApi038318B4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new HttpApi2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:122:21)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsAmplifyApp/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsAmplifyAppEDE4011E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new App in @aws-cdk/aws-amplify-alpha...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:157:24)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals, @cspotcode/source-map-support...",
+        "(no user code in 9007199254740991 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/CpakInfraStack/SageMakerExecutionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SageMakerExecutionRoleDefaultPolicy2414594F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:44:19)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsApiLambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsApiLambdaServiceRole45B440E4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:102:27)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/DefaultStage/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiDefaultStageF03D493C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new HttpApi2 in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:122:21)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/GET--reports/LambdaIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiGETreportsLambdaIntegrationPermissionF39D2B95"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:141:13)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/GET--reports/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiGETreports136CEA6B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:141:13)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/GET--report--{filename}/LambdaIntegration-Permission": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiGETreportfilenameLambdaIntegrationPermissionA7DC0A2A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:148:13)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/GET--report--{filename}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiGETreportfilenameCB982894"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:148:13)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsAmplifyApp/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsAmplifyAppRole643E5A21"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, new App in @aws-cdk/aws-amplify-alpha...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:157:24)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsAmplifyApp/main/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsAmplifyAppmain3BB502A3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...App.addBranch in @aws-cdk/aws-amplify-alpha...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:162:35)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsApiLambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsApiLambdaServiceRoleDefaultPolicy8582E1C2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.grantRead in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:117:12)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/CpakInfraStack/ReportsHttpApi/GET--reports/LambdaIntegration/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsHttpApiGETreportsLambdaIntegrationB2B6234B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new CpakStack (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/lib/cpak-stack.ts:141:13)",
+        "<anonymous> (/Users/matthewlu/Documents/CIC/Automated-CPAK-Measurement/sagemaker/cdk/bin/cpak-infra.ts:7:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    }
+  ]
+}

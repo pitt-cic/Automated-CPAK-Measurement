@@ -1,0 +1,36 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "ab2392dd7a634557c55fc5bb1969ae7f6eff802402ecbe4cf7cf05f4486ce3f3": {
+      "displayName": "ReportsApiLambda/Code",
+      "source": {
+        "path": "asset.ab2392dd7a634557c55fc5bb1969ae7f6eff802402ecbe4cf7cf05f4486ce3f3",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "475721340184-us-east-1-cd003c8c": {
+          "bucketName": "cdk-hnb659fds-assets-475721340184-us-east-1",
+          "objectKey": "ab2392dd7a634557c55fc5bb1969ae7f6eff802402ecbe4cf7cf05f4486ce3f3.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::475721340184:role/cdk-hnb659fds-file-publishing-role-475721340184-us-east-1"
+        }
+      }
+    },
+    "3b72ca8604b0fcd59d7570ba0e1962f9a8d142506d4be08296c7482d4206f237": {
+      "displayName": "CpakInfraStack Template",
+      "source": {
+        "path": "CpakInfraStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "475721340184-us-east-1-9226824c": {
+          "bucketName": "cdk-hnb659fds-assets-475721340184-us-east-1",
+          "objectKey": "3b72ca8604b0fcd59d7570ba0e1962f9a8d142506d4be08296c7482d4206f237.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::475721340184:role/cdk-hnb659fds-file-publishing-role-475721340184-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
