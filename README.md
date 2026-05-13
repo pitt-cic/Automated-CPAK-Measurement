@@ -192,7 +192,13 @@ The deployment URL will be displayed when complete.
 
 ## Training Pipeline
 
-*Coming soon*
+### Estimated Per-Training-Run Costs
+
+| Service                      | Estimated Cost | Notes                              |
+|:-----------------------------|---------------:|:-----------------------------------|
+| SageMaker (ml.g4dn.12xlarge) |         ~$2.45 | Per 30-minute training run         |
+| S3                           |        <$0.10  | Training data and model storage    |
+| **Total**                    |     **~$2.50** |                                    |
 
 ## Inference Application
 
