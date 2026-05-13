@@ -67,7 +67,7 @@ After deploying, update your training scripts to use the new role ARN:
 
 ```bash
 # Get the role ARN
-aws cloudformation describe-stacks --stack-name CpakInfraStack \
+aws cloudformation describe-stacks --stack-name CPAKTrainingStack \
   --query "Stacks[0].Outputs[?OutputKey=='SageMakerRoleArn'].OutputValue" \
   --output text
 
