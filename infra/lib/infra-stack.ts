@@ -10,35 +10,6 @@ export class InfraStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        // CPAK Inference Lambda (container-based for PyTorch)
-        const inferenceFunction = new lambda.DockerImageFunction(this, 'InferenceFunction', {
-            code: lambda.DockerImageCode.fromImageAsset('../backend/lambda/inference', {
-                platform: Platform.LINUX_AMD64,
-            }),
-            architecture: lambda.Architecture.X86_64,
-            memorySize: 4096,
-            timeout: cdk.Duration.seconds(29),
-            functionName: 'cpak-inference',
-        });
-
-        const api = new apigateway.RestApi(this, 'CpakApi', {
-            restApiName: 'CPAK API',
-            description: 'CPAK Measurement API',
-            defaultCorsPreflightOptions: {
-                allowOrigins: apigateway.Cors.ALL_ORIGINS,
-                allowMethods: ['GET', 'POST', 'OPTIONS'],
-                allowHeaders: ['Content-Type', 'Authorization'],
-            },
-        });
-
-        const inferenceResource = api.root.addResource('inference');
-        inferenceResource.addMethod('POST', new apigateway.LambdaIntegration(inferenceFunction));
-
-        new cdk.CfnOutput(this, 'ApiUrl', {
-            value: api.url,
-            description: 'API Gateway URL',
-        });
-
         // Cognito User Pool for authentication
         const userPool = new cognito.UserPool(this, 'UserPool', {
             userPoolName: 'cpak-measurement-user-pool',
@@ -78,6 +49,44 @@ export class InfraStack extends cdk.Stack {
                 logoutUrls: ['http://localhost:5173/', 'http://localhost:3000/'],
             },
             preventUserExistenceErrors: true,
+        });
+
+        // CPAK Inference Lambda (container-based for PyTorch)
+        const inferenceFunction = new lambda.DockerImageFunction(this, 'InferenceFunction', {
+            code: lambda.DockerImageCode.fromImageAsset('../backend/lambda/inference', {
+                platform: Platform.LINUX_AMD64,
+            }),
+            architecture: lambda.Architecture.X86_64,
+            memorySize: 4096,
+            timeout: cdk.Duration.seconds(29),
+            functionName: 'cpak-inference',
+        });
+
+        const api = new apigateway.RestApi(this, 'CpakApi', {
+            restApiName: 'CPAK API',
+            description: 'CPAK Measurement API',
+            defaultCorsPreflightOptions: {
+                allowOrigins: apigateway.Cors.ALL_ORIGINS,
+                allowMethods: ['GET', 'POST', 'OPTIONS'],
+                allowHeaders: ['Content-Type', 'Authorization'],
+            },
+        });
+
+        // Cognito Authorizer for API Gateway
+        const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'CpakAuthorizer', {
+            cognitoUserPools: [userPool],
+            authorizerName: 'CpakCognitoAuthorizer',
+        });
+
+        const inferenceResource = api.root.addResource('inference');
+        inferenceResource.addMethod('POST', new apigateway.LambdaIntegration(inferenceFunction), {
+            authorizer,
+            authorizationType: apigateway.AuthorizationType.COGNITO,
+        });
+
+        new cdk.CfnOutput(this, 'ApiUrl', {
+            value: api.url,
+            description: 'API Gateway URL',
         });
 
         // Amplify App (ready for Git connection)

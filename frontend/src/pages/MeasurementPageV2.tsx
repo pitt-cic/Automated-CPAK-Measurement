@@ -76,7 +76,7 @@ function parsePoints(rawPoints: KeypointData[]): AllPoints | null {
 
 export default function MeasurementPageV2() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, getIdToken } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -156,9 +156,17 @@ export default function MeasurementPageV2() {
       const base64 = imageDataUrl.split(',')[1];
       const apiUrl = import.meta.env.VITE_API_URL;
 
+      const token = await getIdToken();
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+
       const response = await fetch(`${apiUrl}inference`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ image: base64 }),
       });
 
