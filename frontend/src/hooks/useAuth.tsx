@@ -19,6 +19,7 @@ interface AuthContextType {
     attributes?: { givenName?: string; familyName?: string },
   ) => Promise<void>;
   clearError: () => void;
+  getIdToken: () => Promise<string | null>;
 }
 
 type LoginResult =
@@ -126,6 +127,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
   }, []);
 
+  const getIdToken = useCallback(async (): Promise<string | null> => {
+    const user = userPool.getCurrentUser();
+    if (!user) return null;
+
+    return new Promise((resolve) => {
+      user.getSession((err: Error | null, session: CognitoUserSession | null) => {
+        if (err || !session) {
+          resolve(null);
+        } else {
+          resolve(session.getIdToken().getJwtToken());
+        }
+      });
+    });
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -138,6 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         completeNewPasswordChallenge,
         clearError,
+        getIdToken,
       }}
     >
       {children}

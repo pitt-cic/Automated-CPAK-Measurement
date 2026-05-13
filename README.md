@@ -1,4 +1,4 @@
-# README Template for CIC Projects
+# Automated CPAK Measurement
 
 | Index                         | Description                                         |
 |:------------------------------|:----------------------------------------------------|
@@ -18,36 +18,25 @@
 
 # Overview
 
-Write 2–3 sentences describing what the project does and who it is built for. Follow with a bullet list of 3–5 key
-capabilities.
+**Automated CPAK Measurement** is an AI-powered tool that automatically measures knee alignment from long-leg radiographs. It reduces a 15-minute manual measurement task to seconds while achieving a mean error of less than one degree compared to expert measurements.
 
-Use this structure:
-
-> **[Project Name]** is a [short description of the tool/platform — e.g., "serverless AI-powered analytics platform"]
-> designed to help [target user/organization] [achieve what goal]. The solution leverages [key technologies]
-> to [core value proposition].
+Before knee replacement surgery, surgeons must measure the Coronal Plane Alignment of the Knee (CPAK) by manually placing markers on X-rays and calculating angles. This tool automates that process using a U-Net neural network that identifies eight anatomical landmarks per leg and computes the Lateral Distal Femoral Angle (LDFA) and Medial Proximal Tibial Angle (MPTA).
 
 **Key capabilities include:**
 
-- **[Capability 1 Name]**: Brief description of what it does
-- **[Capability 2 Name]**: Brief description of what it does
-- **[Capability 3 Name]**: Brief description of what it does
-- *(Add more as needed)*
+- **Automated Landmark Detection**: U-Net model identifies femoral head center, knee centers, ankle center, and joint line endpoints on both legs simultaneously
+- **Instant Angle Calculation**: Computes LDFA, MPTA, and CPAK classification type in seconds
+- **Human-in-the-Loop Verification**: Overlays predicted landmarks and measurement lines directly on the X-ray so surgeons can visually verify results before accepting them
+- **Adjustable Predictions**: Drag-and-drop interface allows manual refinement of any landmark position with automatic angle recalculation
+- **Export with Annotations**: Generate annotated images showing all measurements for documentation
 
-> **Tip:** If the solution is domain-specific but reusable, add a note at the end explaining how others can adapt it for
-> their own use case.
+This repository contains both the inference application (deployable to AWS) and the training pipeline used to develop the model.
 
 ---
 
 # Demo
 
-Embed a demo video of the working application here. Upload the video as a GitHub asset and paste the generated link.
-
-```
-https://github.com/[org]/[repo]/assets/[asset-id]
-```
-
-> If a live demo or recorded walkthrough is not available yet, note it as "Coming soon" and update before publishing.
+*Coming soon*
 
 ---
 
@@ -55,80 +44,64 @@ https://github.com/[org]/[repo]/assets/[asset-id]
 
 ## Problem Statement
 
-Describe the real-world problem the project solves. Cover:
+Over 700,000 knee replacement surgeries are performed in the United States each year. Before each procedure, surgeons must take a long-leg radiograph (a weight-bearing X-ray from hip to ankle) and manually place markers at the center of the femoral head, knee joint, and ankle. From these points, they measure the angles that will guide how the prosthetic joint is aligned.
 
-- What challenge does the target organization or user face?
-- Why is the current/manual approach insufficient?
-- What is the consequence of not solving this problem (e.g., missed insights, wasted time, revenue impact)?
-
-Keep this to 2–4 sentences. Be specific and avoid generic statements.
+This manual measurement process takes approximately 15 minutes per patient. With multiple surgeons performing these measurements daily, this represents a significant amount of expensive clinical time. Additionally, there is inherent variability between users in exactly where they place the anatomical markers.
 
 ## Our Approach
 
-Explain how the project solves the problem. Break it down into 2–4 named subsections, each covering a distinct aspect of
-your solution. For each subsection, describe:
+**U-Net Landmark Detection** — The core of the solution is a U-Net convolutional neural network trained to identify eight anatomical landmarks on each leg: femoral head center, knee center (femoral), knee center (tibial), ankle center, and four joint line endpoints (medial/lateral upper and lower). The model processes the radiograph and outputs heatmaps for each landmark, from which the precise coordinates are extracted.
 
-- What the component/feature does
-- Which technologies or AWS services power it
-- Why this approach was chosen over alternatives (if relevant)
+**Serverless Inference Pipeline** — The trained model runs on AWS Lambda using ONNX Runtime for efficient CPU-based inference. API Gateway exposes the inference endpoint, and Cognito handles user authentication. This serverless architecture scales automatically and incurs costs only when processing images.
 
-Use bold headers for each subsection. Example subsections:
+**Human-in-the-Loop Interface** — The React frontend displays the predicted landmarks overlaid directly on the X-ray, allowing surgeons to visually verify that the model's predictions are reasonable before accepting the measurements. If any landmark needs adjustment, users can drag it to the correct position and the angles recalculate automatically. This design ensures surgeons maintain control and can trust the output.
 
-- **[Core Pipeline Name]** — e.g., the data processing or ingestion flow
-- **[AI/Agent Architecture]** — the LLM or AI component and its role
-- **[Infrastructure Approach]** — e.g., serverless, event-driven, async processing
-- **[User Interface]** — the frontend framework and key UX decisions
+## Training & Validation
 
-## Testing & Validation
-
-> **Note:** Include this section if your project involves a component that required empirical validation or threshold
-> tuning — for example, embedding similarity thresholds, model output evaluation, latency benchmarks, or classification
-> accuracy. If not applicable, remove this section.
-
-Describe the testing methodology used to validate a key technical decision. Include:
-
-- What was being tested and why
-- How testing was conducted (e.g., sample queries, labeled data, A/B comparison)
-- What the results showed and what threshold/value was selected as a result
-
-Add supporting visuals (screenshots, charts, result tables) if available:
-
-```markdown
-<img src="docs/[your-image].png" alt="[Description]" width="800">
-```
+The U-Net model was trained on over 300 manually annotated long-leg radiographs from the NIH Osteoarthritis Initiative dataset. On a held-out test set, the final model achieved a mean keypoint error of approximately 1.8 mm and a mean absolute error of less than one degree for both LDFA and MPTA angle measurements.
 
 ---
 
 # Architecture
 
-Add an architecture diagram image showing how all AWS services and components interact.
-
-```markdown
-<img src="docs/architecture-diagram.[png/jpeg]" alt="[Project Name] Architecture Diagram" width="800">
-```
-
-Save the diagram image inside a `docs/` folder in the repository. The diagram should clearly show:
-
-- All AWS services used and how data flows between them
-- The frontend, backend, and any external integrations
-- Async or event-driven flows if applicable
+<img src="docs/architecture.png" alt="CPAK Measurement Architecture Diagram" width="800">
 
 ---
 
 # Tech Stack
 
-Use a table to list all technologies and services. Group them into logical categories (e.g., AWS, Backend, Frontend).
+## Inference Application
 
-| Category                      | Technology                                        | Purpose                               |
-|:------------------------------|:--------------------------------------------------|:--------------------------------------|
-| **Amazon Web Services (AWS)** | [Service Name + link](https://aws.amazon.com/...) | What this service does in the project |
-|                               | [Service Name + link](https://aws.amazon.com/...) | What this service does in the project |
-| **Backend**                   | [Library/Language + link](https://...)            | What it is used for                   |
-|                               | [Library/Language + link](https://...)            | What it is used for                   |
-| **Frontend**                  | [Framework + link](https://...)                   | What it is used for                   |
-|                               | [Library + link](https://...)                     | What it is used for                   |
+| Category     | Technology                                                                 | Purpose                                      |
+|:-------------|:---------------------------------------------------------------------------|:---------------------------------------------|
+| **Frontend** | [React](https://react.dev/)                                                | User interface framework                     |
+|              | [Vite](https://vitejs.dev/)                                                | Build tool and dev server                    |
+|              | [Tailwind CSS](https://tailwindcss.com/)                                   | Styling                                      |
+| **Backend**  | [ONNX Runtime](https://onnxruntime.ai/)                                    | Model inference engine                       |
+|              | [Python](https://www.python.org/)                                          | Lambda function runtime                      |
+| **AWS**      | [Lambda](https://aws.amazon.com/lambda/)                                   | Serverless inference compute                 |
+|              | [API Gateway](https://aws.amazon.com/api-gateway/)                         | REST API endpoint                            |
+|              | [Cognito](https://aws.amazon.com/cognito/)                                 | User authentication                          |
+|              | [Amplify Hosting](https://aws.amazon.com/amplify/)                         | Frontend hosting                             |
+| **IaC**      | [AWS CDK](https://aws.amazon.com/cdk/)                                     | Infrastructure as code                       |
 
-> **Tip:** Link every technology name to its official documentation or product page.
+## Training Pipeline
+
+| Category     | Technology                                                                 | Purpose                                      |
+|:-------------|:---------------------------------------------------------------------------|:---------------------------------------------|
+| **ML**       | [PyTorch](https://pytorch.org/)                                            | Model training framework                     |
+| **AWS**      | [SageMaker](https://aws.amazon.com/sagemaker/)                             | GPU training jobs                            |
+|              | [S3](https://aws.amazon.com/s3/)                                           | Training data and model artifact storage     |
+|              | [Lambda](https://aws.amazon.com/lambda/)                                   | Reports API                                  |
+|              | [API Gateway](https://aws.amazon.com/api-gateway/)                         | Reports API endpoint                         |
+|              | [Amplify Hosting](https://aws.amazon.com/amplify/)                         | Training reports dashboard                   |
+| **IaC**      | [AWS CDK](https://aws.amazon.com/cdk/)                                     | Infrastructure as code                       |
+
+---
+
+# Model Training
+
+*Coming soon*
 
 ---
 
@@ -136,168 +109,137 @@ Use a table to list all technologies and services. Group them into logical categ
 
 ## Prerequisites
 
-List everything the user needs installed or configured before they can deploy. Number each item and link to installation
-guides where possible. Common prerequisites:
-
 1. An [AWS account](https://signin.aws.amazon.com/signup?request_type=register)
-2. **Node.js** (specify version) — [Download here](https://nodejs.org/) or use [nvm](https://github.com/nvm-sh/nvm)
-3. **AWS CDK** (specify version) — install via:
+2. **Node.js 24+** — [Download here](https://nodejs.org/) or use [nvm](https://github.com/nvm-sh/nvm)
+3. **AWS CLI** — [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+4. **AWS CDK** — install via npm:
    ```bash
    npm install -g aws-cdk
    ```
-4. **AWS CLI** — [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-5. **Docker** — [Download here](https://www.docker.com/get-started/)
-6. **Git** — [Download here](https://git-scm.com/)
-7. *(Add any project-specific prerequisites)*
+5. **Docker** — [Download here](https://www.docker.com/get-started/) (required for Lambda container build)
 
 ## AWS Configuration
-
-Provide the AWS CLI setup steps that must be done before deployment:
 
 1. **Configure AWS credentials:**
    ```bash
    aws configure
    ```
 
-2. **Bootstrap CDK** *(required once per AWS account/region):*
+2. **Verify credentials are working:**
    ```bash
-   cdk bootstrap aws://ACCOUNT_ID/REGION
+   aws sts get-caller-identity
    ```
 
-## Quick Start (Recommended)
+## Deploy Infrastructure
 
-Provide the fastest path to a working deployment. If you have a deploy script, walk through it step by step:
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/[org]/[repo].git
-   cd [repo]
-   ```
-
-2. **Run the deploy script:**
-   ```bash
-   chmod +x ./deploy.sh
-   ./deploy.sh
-   ```
-
-3. **Select the appropriate option** from the menu (e.g., option 1 for full deployment).
-
-Briefly describe what the script handles (e.g., infrastructure provisioning, frontend build, data upload).
-
-<details>
-<summary><strong>Manual Deployment Steps</strong></summary>
-
-### Backend Deployment
-
-Step-by-step instructions for manually deploying the backend infrastructure using CDK:
+Deploy the backend infrastructure (Lambda, API Gateway, Cognito, Amplify):
 
 ```bash
-cd infrastructure
+cd infra
 npm install
-npx cdk deploy
+npm run deploy
 ```
 
-Mention any important CDK outputs the user will need for the next step.
+The deploy script will:
+- Build TypeScript
+- Bootstrap CDK (first time only)
+- Deploy the CloudFormation stack
 
-### Frontend Deployment
+On first run, Docker will build the Lambda container image which may take several minutes.
 
-Step-by-step instructions for building and deploying the frontend. Note any environment variables that need to be pulled
-from CDK outputs.
+## Deploy Frontend
 
-</details>
-
-## Local Development
-
-Instructions for running the frontend (or backend) locally for development purposes:
+After infrastructure is deployed, deploy the frontend to Amplify:
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run deploy
 ```
+
+The deploy script will:
+- Fetch environment variables from CloudFormation outputs
+- Build the React application
+- Upload and deploy to AWS Amplify
+
+The deployment URL will be displayed when complete.
 
 ---
 
 # Usage
 
-Walk through how a user actually uses the deployed application. Number each step in the typical user journey:
+1. **Access the Application** — Open the Amplify URL displayed after frontend deployment
 
-1. **Access the Application** — How to find the app URL after deployment (e.g., from deploy script output or CDK
-   outputs)
-2. **User Registration / Login** — How user accounts are created and how to log in for the first time. Include both the
-   recommended script-based method and manual CLI/Console alternatives inside a `<details>` block.
-3. **Upload or Prepare Data** — How to load data into the system (e.g., uploading a CSV to S3). Specify any required
-   file format, column names, or validation rules in a table.
-4. **Core Action** — How to use the main feature of the application (e.g., submitting a query, running an analysis,
-   triggering a job).
-5. **View / Export Results** — What output the user receives and how to download or export it.
+2. **Create a User** — Users must be created manually in the AWS Cognito Console. Navigate to the User Pool and create a new user with an email and temporary password.
 
-> Add screenshots if helpful. For any step with multiple methods (script vs. CLI vs. console), use `<details>` blocks to
-> keep the main flow clean.
+3. **Log In** — Enter your credentials. On first login, you'll be prompted to set a new password.
+
+4. **Upload an Image** — Click "Select Image" and choose a long-leg radiograph (PNG, JPG, or DICOM)
+
+5. **Run Analysis** — Click "Analyze" to send the image to the inference API. The model will detect anatomical landmarks on both legs.
+
+6. **Verify Landmarks** — Review the predicted landmark positions overlaid on the image. Use the visibility toggles to show/hide points and lines for each leg.
+
+7. **Adjust if Needed** — Drag any landmark to refine its position. Angles recalculate automatically as you move points.
+
+8. **Review Measurements** — The sidebar displays LDFA, MPTA, and CPAK classification type for each leg
+
+9. **Export Results** — Click "Export" to download an annotated image with all landmarks, lines, and measurements overlaid
 
 ---
 
 # Costs
 
-## Estimated Monthly Recurring Costs
+## Training Pipeline
 
-Provide a table of all AWS services used and their estimated monthly cost at baseline (no or low usage). Use `~$0`,
-`<$1`, or ranges as appropriate. Include a total row.
+*Coming soon*
 
-| Service            |  Estimated Cost | Notes                                                  |
-|:-------------------|----------------:|:-------------------------------------------------------|
-| [Service 1]        |             ~$0 | Reason (e.g., free tier)                               |
-| [Service 2]        |             <$1 | Reason (e.g., pay-per-request)                         |
-| **Total Baseline** | **~$X–Y/month** | Excluding [any variable cost, e.g., Bedrock/LLM usage] |
+## Inference Application
 
-## Per-Query / Per-Invocation Costs *(if applicable)*
+### Estimated Monthly Costs
 
-If the project uses a pay-per-use AI or compute service (e.g., Amazon Bedrock, SageMaker endpoints), break down the cost
-per user action:
+| Service          | Estimated Cost | Notes                                                  |
+|:-----------------|---------------:|:-------------------------------------------------------|
+| Cognito          |            ~$0 | Free tier covers 10,000 MAUs                           |
+| AWS Amplify      |            ~$0 | Free tier covers most small deployments                |
+| **Total**        |        **~$0** |                                                        |
 
-| Model / Service       | Usage per action |       Cost |
-|:----------------------|:----------------:|-----------:|
-| [Model name] (input)  |    ~X tokens     |     ~$X.XX |
-| [Model name] (output) |    ~X tokens     |     ~$X.XX |
-| **Total per action**  |                  | **~$X.XX** |
+### Estimated Per-Inference Costs
 
-Include example monthly cost projections at a few usage levels (e.g., 100, 500, 1,000 actions/month).
+| Service                | Cost per invocation |
+|:-----------------------|--------------------:|
+| Lambda (4096 MB, ~10s) |           ~$0.0007  |
+| API Gateway            |         ~$0.000001  |
+| **Total**              |       **<$0.001**   |
 
-## One-Time Costs *(if applicable)*
-
-If there are one-time costs (e.g., generating embeddings when uploading data), list them separately with a worked
-example.
-
-> **Note:** All cost estimates should be based on AWS pricing as of the month and year of publishing. Add a note that
-> actual costs may vary.
+> **Note:** Cost estimates based on AWS pricing as of 2026. Actual costs may vary by region and usage patterns.
 
 ---
 
 # Credits
 
-List everyone who contributed to the project. Use the following structure:
-
-**[Project Name]** is an open-source project developed by the [CIC team name].
+**Automated CPAK Measurement** is an open-source project developed by the University of Pittsburgh Health Sciences and Sports Analytics Cloud Innovation Center.
 
 **Development Team:**
 
-- [Full Name](https://www.linkedin.com/in/[profile]/)
-- [Full Name](https://www.linkedin.com/in/[profile]/)
+- [Gary Farrell](https://www.linkedin.com/in/gary-farrell/)
+- [Matthew Lu](https://www.linkedin.com/in/matthewlu2/)
+- [Eric Poplavsky](https://www.linkedin.com/in/eric-poplavsky/)
 
 **Project Leadership:**
 
-- **Technical Lead**: [Full Name](https://www.linkedin.com/in/[profile]/) — [Title], [Organization]
-- **Program Manager**: [Full Name](https://www.linkedin.com/in/[profile]/) — [Title], [Organization]
+- **Technical Lead:** [Maciej Zukowski](https://www.linkedin.com/in/maciejzukowski/) — Solutions Architect, Amazon Web Services (AWS)
+- **Program Manager:** [Kate Ulreich](https://www.linkedin.com/in/kate-ulreich-0a8902134/) — Program Leader, University of Pittsburgh Health Sciences and Sports Analytics Cloud Innovation Center
 
-**Special Thanks** *(if applicable)*:
+**Special Thanks:**
 
-- [Full Name](https://www.linkedin.com/in/[profile]/) — [Title], [Organization] *(e.g., domain expert, data provider,
-  stakeholder)*
+- [William J. Anderst, PhD](https://www.orthonet.pitt.edu/people/william-j-anderst-phd) — Associate Professor, Department of Orthopaedic Surgery, University of Pittsburgh
 
-Close with a line acknowledging the CIC:
+**Training Data:**
 
-> This project is designed and developed with guidance and support from
-> the [Health Sciences and Sports Analytics Cloud Innovation Center, powered by AWS](https://digital.pitt.edu/cic).
+For our testing, we trained models using data from the NIH Osteoarthritis Initiative (OAI). Researchers wishing to recreate or extend this work can request access to OAI data through the NIMH Data Archive. DOI: [10.15154/ya5a-pg80](https://doi.org/10.15154/ya5a-pg80)
+
+This project is designed and developed with guidance and support from the [Health Sciences and Sports Analytics Cloud Innovation Center, powered by AWS](https://digital.pitt.edu/cic).
 
 ---
 
