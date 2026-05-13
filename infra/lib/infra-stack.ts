@@ -21,7 +21,7 @@ export class InfraStack extends cdk.Stack {
             functionName: 'cpak-inference',
         });
 
-        const api = new apigateway.RestApi(this, 'TemplateAPI', {
+        const api = new apigateway.RestApi(this, 'CpakApi', {
             restApiName: 'CPAK API',
             description: 'CPAK Measurement API',
             defaultCorsPreflightOptions: {
@@ -41,7 +41,7 @@ export class InfraStack extends cdk.Stack {
 
         // Cognito User Pool for authentication
         const userPool = new cognito.UserPool(this, 'UserPool', {
-            userPoolName: 'template-user-pool',
+            userPoolName: 'cpak-measurement-user-pool',
             selfSignUpEnabled: true,
             signInAliases: {
                 email: true,
@@ -64,7 +64,7 @@ export class InfraStack extends cdk.Stack {
         // User Pool Client
         const userPoolClient = new cognito.UserPoolClient(this, 'UserPoolClient', {
             userPool,
-            userPoolClientName: 'template-app-client',
+            userPoolClientName: 'cpak-measurement-client',
             authFlows: {
                 userSrp: true,
                 userPassword: true,
@@ -82,7 +82,7 @@ export class InfraStack extends cdk.Stack {
 
         // Amplify App (ready for Git connection)
         const amplifyApp = new amplify.CfnApp(this, 'AmplifyApp', {
-            name: 'template-frontend',
+            name: 'cpak-measurement-frontend',
             environmentVariables: [
                 {name: 'VITE_USER_POOL_ID', value: userPool.userPoolId},
                 {name: 'VITE_USER_POOL_CLIENT_ID', value: userPoolClient.userPoolClientId},

@@ -8,3 +8,7 @@
 /frontend/package-lock.json
 /backend/lambda/inference/models/
 /data/
+/extra_materials/
+.DS_Store
+DEVELOPER_GUIDE.md
+frontend/setup-dev.sh
