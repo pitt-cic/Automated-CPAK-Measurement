@@ -83,14 +83,14 @@ class ModelPredictor:
         checkpoint = torch.load(checkpoint_path, map_location=self.device)
         self.saved_args = checkpoint.get('args', {})
 
-        self.input_width = self.saved_args.get('width', 256)
-        self.input_height = self.saved_args.get('height', 1024)
+        self.input_width = self.saved_args.get('width', 384)
+        self.input_height = self.saved_args.get('height', 2688)
         self.heatmap_scale = self.saved_args.get('heatmap_scale', 2)
 
         self.model = UNetWithIntermediateSupervision(
             in_channels=1,
             out_channels=self.saved_args.get('out_channels', 8),
-            base_channels=self.saved_args.get('base_channels', 32),
+            base_channels=self.saved_args.get('base_channels', 16),
             output_scale=self.saved_args.get('heatmap_scale', 2)
         )
         self.model.load_state_dict(checkpoint['model_state_dict'])
