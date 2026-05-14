@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-CPAK X-Ray Annotation Tool V3 - Performance Only
+CPAK X-Ray Annotation Tool
 
-Model predicts all keypoints, user drags to refine positions.
-Performance optimized with canvas items - original v2 UI sizing preserved.
+Model predicts 8 keypoints per leg, user drags to refine positions.
 """
 
 import tkinter as tk
@@ -17,9 +16,9 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-# Add model to path for imports
+# Add training folder to path for model import
 BASE_DIR = Path(__file__).parent
-sys.path.insert(0, str(BASE_DIR / "model"))
+sys.path.insert(0, str(BASE_DIR.parent))
 
 from model import UNetWithIntermediateSupervision
 
@@ -28,7 +27,7 @@ EXTRACTED_DIR = BASE_DIR / "data" / "toBeAnnotated"
 OUTPUT_DIR = BASE_DIR / "data" / "output"
 SKIPPED_DIR = BASE_DIR / "data" / "skipped"
 ANNOTATIONS_FILE = BASE_DIR / "data" / "annotations.json"
-CHECKPOINT_PATH = BASE_DIR / "model" / "best_model.pt"
+CHECKPOINT_PATH = BASE_DIR / "checkpoints" / "best_model.pt"
 
 # Point definitions (8 points per leg)
 POINT_NAMES = [
@@ -65,17 +64,6 @@ POINT_COLORS = [
     "#FFA500",  # Orange - Outer lower
 ]
 
-# Model outputs 7 points (maps to our 8-point format)
-MODEL_POINT_NAMES = [
-    "femoral_head_center",
-    "knee_center",      # Model predicts single knee point - we split it
-    "ankle_center",
-    "inner_upper",
-    "outer_upper",
-    "inner_lower",
-    "outer_lower"
-]
-
 
 class ModelPredictor:
     """Handles model loading and inference for keypoint prediction."""
@@ -97,11 +85,13 @@ class ModelPredictor:
 
         self.input_width = self.saved_args.get('width', 256)
         self.input_height = self.saved_args.get('height', 1024)
-        self.heatmap_scale = self.saved_args.get('heatmap_scale', 4)
+        self.heatmap_scale = self.saved_args.get('heatmap_scale', 2)
 
         self.model = UNetWithIntermediateSupervision(
-            in_channels=1, out_channels=7,
-            base_channels=self.saved_args.get('base_channels', 32)
+            in_channels=1,
+            out_channels=self.saved_args.get('out_channels', 8),
+            base_channels=self.saved_args.get('base_channels', 32),
+            output_scale=self.saved_args.get('heatmap_scale', 2)
         )
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.model = self.model.to(self.device)
@@ -123,14 +113,14 @@ class ModelPredictor:
             heatmaps = torch.clamp(heatmaps, 0, 1)
             heatmaps = heatmaps[0].cpu().numpy()
 
-        keypoints = []
-        for k in range(7):
+        num_keypoints = heatmaps.shape[0]
+        keypoints = {}
+        for k, name in enumerate(POINT_NAMES[:num_keypoints]):
             hm = heatmaps[k]
             peak_y, peak_x = np.unravel_index(hm.argmax(), hm.shape)
-            # Scale to leg image coordinates
             leg_x = peak_x * self.heatmap_scale * (w / self.input_width)
             leg_y = peak_y * self.heatmap_scale * (h / self.input_height)
-            keypoints.append((leg_x, leg_y))
+            keypoints[name] = (leg_x, leg_y)
 
         return keypoints
 
@@ -169,16 +159,12 @@ class ImageProcessor:
             return image[:, half_w:]
 
 
-class AnnotationToolV3PerfOnly:
-    """Main GUI for model-assisted annotation with drag refinement.
-
-    Performance optimized: points and lines are canvas items, not drawn on image.
-    Original v2 UI sizing preserved.
-    """
+class AnnotationTool:
+    """Model-assisted annotation GUI with drag refinement."""
 
     def __init__(self, root):
         self.root = root
-        self.root.title("CPAK Annotation Tool V3 - Performance Optimized")
+        self.root.title("CPAK Annotation Tool")
         self.root.geometry("1300x950")
 
         # Load model
@@ -478,21 +464,10 @@ class AnnotationToolV3PerfOnly:
         self.leg_image = ImageProcessor.crop_leg(self.enhanced_image, self.current_leg)
         self.cache_valid = False
 
-        # Run model prediction (7 points)
         print(f"Running prediction for {self.current_leg} leg...")
-        predicted = self.predictor.predict_leg(
+        self.points = self.predictor.predict_leg(
             ImageProcessor.crop_leg(self.current_image, self.current_leg)
         )
-
-        # Map 7-point model output to 8-point annotation format
-        self.points = {}
-        for name, (x, y) in zip(MODEL_POINT_NAMES, predicted):
-            if name == "knee_center":
-                # Split into femoral (at prediction) and tibial (5px below)
-                self.points["knee_center_femoral"] = (x, y)
-                self.points["knee_center_tibial"] = (x, y + 15)
-            else:
-                self.points[name] = (x, y)
 
         # Reset view
         self.zoom_level = 1.0
@@ -960,7 +935,7 @@ class AnnotationToolV3PerfOnly:
             "original_height": self.original_size[1],
             "annotated_at": datetime.now().isoformat(),
             "status": "completed",
-            "annotation_tool": "v3_perf",
+            "annotation_tool": "model_assisted",
             "left_leg": {name: {"x": x, "y": y} for name, (x, y) in self.left_points.items()},
             "right_leg": {name: {"x": x, "y": y} for name, (x, y) in self.right_points.items()}
         }
@@ -1025,5 +1000,5 @@ class AnnotationToolV3PerfOnly:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = AnnotationToolV3PerfOnly(root)
+    app = AnnotationTool(root)
     root.mainloop()

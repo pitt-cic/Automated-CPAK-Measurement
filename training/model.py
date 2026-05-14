@@ -60,10 +60,10 @@ class UNetWithIntermediateSupervision(nn.Module):
         in_channels: Number of input channels (1 for grayscale)
         out_channels: Number of output channels (8 keypoints)
         base_channels: Base channel count (doubled at each encoder level)
-        output_scale: Output resolution as fraction of input (4 = 1/4 res, 2 = 1/2 res, 1 = full res)
+        output_scale: Output resolution as fraction of input (2 = 1/2 res, 4 = 1/4 res, 1 = full res)
     """
 
-    def __init__(self, in_channels=1, out_channels=8, base_channels=32, output_scale=4):
+    def __init__(self, in_channels=1, out_channels=8, base_channels=16, output_scale=2):
         super().__init__()
         self.output_scale = output_scale
 

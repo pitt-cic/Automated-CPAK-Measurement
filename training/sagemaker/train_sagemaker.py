@@ -251,7 +251,7 @@ class DataAugmentation:
 
 class LegKeypointDataset(Dataset):
     def __init__(self, annotations_path, images_dir,
-                 input_size=(256, 1024), sigma=15, heatmap_scale=4,
+                 input_size=(384, 2688), sigma=10, heatmap_scale=2,
                  augment=False, normalize_orientation=True):
         self.images_dir = Path(images_dir)
         self.input_size = input_size
@@ -770,23 +770,23 @@ if __name__ == "__main__":
     parser.add_argument('--model-dir', type=str, default=os.environ.get('SM_MODEL_DIR', '/opt/ml/model'))
 
     # Model hyperparameters
-    parser.add_argument('--width', type=int, default=256)
-    parser.add_argument('--height', type=int, default=1024)
-    parser.add_argument('--sigma', type=float, default=15.0)
-    parser.add_argument('--heatmap-scale', type=int, default=4)
-    parser.add_argument('--base-channels', type=int, default=32)
+    parser.add_argument('--width', type=int, default=384)
+    parser.add_argument('--height', type=int, default=2688)
+    parser.add_argument('--sigma', type=float, default=10.0)
+    parser.add_argument('--heatmap-scale', type=int, default=2)
+    parser.add_argument('--base-channels', type=int, default=16)
 
     # Loss hyperparameters
     parser.add_argument('--loss-alpha', type=float, default=10.0)
-    parser.add_argument('--peak-weight', type=float, default=1.0)
+    parser.add_argument('--peak-weight', type=float, default=0.1)
     parser.add_argument('--aux-weight', type=float, default=0.3)
     parser.add_argument('--use-keypoint-weights', type=lambda x: str(x).lower() in ('true', '1', 'yes'),
-                        default=False, help='Use per-keypoint loss weights (higher for inner/outer_upper)')
+                        default=True, help='Use per-keypoint loss weights (higher for inner/outer_upper)')
 
     # Training hyperparameters
     parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--batch-size', type=int, default=4)
-    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--batch-size', type=int, default=2)
+    parser.add_argument('--lr', type=float, default=3e-4)
     parser.add_argument('--weight-decay', type=float, default=1e-5)
     parser.add_argument('--patience', type=int, default=20)
     parser.add_argument('--max-grad-norm', type=float, default=1.0, help='Max gradient norm for clipping (0 to disable)')

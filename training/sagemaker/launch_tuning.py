@@ -168,9 +168,9 @@ if __name__ == "__main__":
                         help='Max runtime per job in hours (default: 2)')
 
     # Model architecture (fixed)
-    parser.add_argument('--heatmap-scale', type=int, default=4)
-    parser.add_argument('--width', type=int, default=256)
-    parser.add_argument('--height', type=int, default=1024)
+    parser.add_argument('--heatmap-scale', type=int, default=2)
+    parser.add_argument('--width', type=int, default=384)
+    parser.add_argument('--height', type=int, default=2688)
 
     # Training stability (fixed)
     parser.add_argument('--max-grad-norm', type=float, default=1.0,

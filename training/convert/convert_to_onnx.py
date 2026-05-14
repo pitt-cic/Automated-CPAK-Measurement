@@ -7,6 +7,12 @@ Run this locally once:
 Requires torch installed locally.
 """
 
+import sys
+from pathlib import Path
+
+# Add training folder to path for model import
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import torch
 from model import UNetWithIntermediateSupervision
 
