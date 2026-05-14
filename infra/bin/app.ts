@@ -1,12 +1,27 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import {InfraStack} from '../lib/infra-stack';
+import {InferenceStack} from '../lib/inference-stack';
+import {TrainingStack} from '../lib/training-stack';
 
 const app = new cdk.App();
-new InfraStack(app, 'CpakInfraStack', {
-    env: {
-        account: process.env.CDK_DEFAULT_ACCOUNT,
-        region: process.env.CDK_DEFAULT_REGION || 'us-east-1',
-    },
-    description: 'CPAK Measurement Infrastructure',
-});
+
+const env = {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION || 'us-east-1',
+};
+
+const mode = app.node.tryGetContext('mode') || 'all';
+
+if (mode === 'inference' || mode === 'all') {
+    new InferenceStack(app, 'CpakInferenceStack', {
+        env,
+        description: 'CPAK Measurement Inference Infrastructure',
+    });
+}
+
+if (mode === 'training' || mode === 'all') {
+    new TrainingStack(app, 'CpakTrainingStack', {
+        env,
+        description: 'CPAK SageMaker Training Infrastructure',
+    });
+}

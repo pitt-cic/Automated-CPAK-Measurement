@@ -14,7 +14,7 @@ set -euo pipefail
 #
 
 # Configuration
-STACK_NAME="CpakInfraStack"
+STACK_NAME="CpakInferenceStack"
 DEFAULT_BRANCH="main"
 DIST_DIR="dist"
 ZIP_FILE="/tmp/amplify-deploy-$$.zip"

@@ -1,14 +1,30 @@
+# Virtual environments
 /.venv/
-/.idea
-/frontend/.env
-/.claude/
-/frontend/dist/
-/frontend/node_modules/
-/infra/package-lock.json
-/frontend/package-lock.json
-/backend/lambda/inference/models/
-/data/
-/extra_materials/
+
+# IDE
+/.idea/
 .DS_Store
+
+/.claude/
+
+# Frontend (inference)
+/frontend/inference/.env
+/frontend/inference/dist/
+/frontend/inference/node_modules/
+/frontend/inference/package-lock.json
+
+# Frontend (training) - no build artifacts, just static HTML
+
+# Infrastructure
+/infra/node_modules/
+/infra/package-lock.json
+/infra/dist/
+
+# Backend
+/backend/lambda/inference/models/
+
+# Data (training data, not committed)
+/data/
+
+# Dev-only files
 DEVELOPER_GUIDE.md
-frontend/setup-dev.sh

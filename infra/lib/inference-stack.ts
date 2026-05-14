@@ -6,7 +6,7 @@ import * as amplify from 'aws-cdk-lib/aws-amplify';
 import {Platform} from 'aws-cdk-lib/aws-ecr-assets';
 import {Construct} from 'constructs';
 
-export class InfraStack extends cdk.Stack {
+export class InferenceStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
@@ -103,18 +103,18 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd frontend
+        - cd frontend/inference
         - npm ci
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: frontend/dist
+    baseDirectory: frontend/inference/dist
     files:
       - '**/*'
   cache:
     paths:
-      - frontend/node_modules/**/*`,
+      - frontend/inference/node_modules/**/*`,
             customRules: [
                 {
                     source: '</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json)$)([^.]+$)/>',

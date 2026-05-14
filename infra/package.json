@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "bash deploy-infra.sh",
+    "deploy": "bash ../deploy.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -29,6 +29,7 @@
     "typescript-eslint": "^8.0.0"
   },
   "dependencies": {
+    "@aws-cdk/aws-amplify-alpha": "^2.170.0-alpha.0",
     "aws-cdk-lib": "^2.241.0",
     "constructs": "^10.5.0"
   }

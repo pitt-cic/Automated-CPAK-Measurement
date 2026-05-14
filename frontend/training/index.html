@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPAK Evaluation Reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header .subtitle {
+            color: #888;
+            font-size: 1rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+        .stat-box .label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 1rem;
+            width: 300px;
+            outline: none;
+        }
+        .search-box::placeholder {
+            color: #888;
+        }
+        .search-box:focus {
+            border-color: #4CAF50;
+        }
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .sort-controls label {
+            color: #888;
+        }
+        .sort-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sort-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .sort-btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 15px 10px;
+            color: #888;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover {
+            color: #fff;
+        }
+        th.sorted-asc::after {
+            content: ' ▲';
+            font-size: 0.7rem;
+        }
+        th.sorted-desc::after {
+            content: ' ▼';
+            font-size: 0.7rem;
+        }
+        td {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        .report-link {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .report-link:hover {
+            text-decoration: underline;
+        }
+        .date-cell {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .size-cell {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        .view-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        .last-updated {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #f44336;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-title {
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .modal-close:hover {
+            color: #f44336;
+        }
+        .modal-body {
+            flex: 1;
+            overflow: hidden;
+        }
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CPAK Evaluation Reports</h1>
+            <p class="subtitle">Model Performance Dashboard</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="number" id="total-reports">-</div>
+                <div class="label">Total Reports</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" id="latest-date">-</div>
+                <div class="label">Latest Report</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="controls">
+                <input type="text" class="search-box" id="search" placeholder="Search reports...">
+                <div class="sort-controls">
+                    <label>Sort:</label>
+                    <button class="sort-btn active" data-sort="date" data-order="desc">Newest First</button>
+                    <button class="sort-btn" data-sort="date" data-order="asc">Oldest First</button>
+                    <button class="sort-btn" data-sort="name" data-order="asc">Name A-Z</button>
+                    <button class="refresh-btn" id="refresh-btn" onclick="loadReports()">Refresh</button>
+                </div>
+            </div>
+
+            <table id="reports-table">
+                <thead>
+                    <tr>
+                        <th data-sort="name">Training Job</th>
+                        <th data-sort="date" class="sorted-desc">Date</th>
+                        <th data-sort="size">Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-body">
+                    <tr>
+                        <td colspan="4" class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Loading reports...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>CPAK Automated Measurement System</p>
+            <p class="last-updated" id="last-updated"></p>
+        </div>
+    </div>
+
+    <!-- Modal for viewing reports -->
+    <div class="modal" id="report-modal">
+        <div class="modal-header">
+            <span class="modal-title" id="modal-title">Report</span>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="report-iframe"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Configuration - UPDATE THIS with your API Gateway URL after deployment
+        const API_URL = window.CONFIG?.API_URL || '/api';
+
+        let reports = [];
+        let currentSort = { key: 'date', order: 'desc' };
+
+        async function loadReports() {
+            const btn = document.getElementById('refresh-btn');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${API_URL}/reports`);
+                if (!response.ok) throw new Error('Failed to fetch reports');
+
+                const data = await response.json();
+                reports = data.reports || [];
+
+                renderReports();
+                updateStats();
+                document.getElementById('last-updated').textContent =
+                    `Last updated: ${new Date().toLocaleString()}`;
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                document.getElementById('reports-body').innerHTML = `
+                    <tr>
+                        <td colspan="4">
+                            <div class="error-message">
+                                <p>Failed to load reports. Please try again.</p>
+                                <p style="font-size: 0.8rem; margin-top: 10px;">${error.message}</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Refresh';
+            }
+        }
+
+        function renderReports() {
+            const tbody = document.getElementById('reports-body');
+
+            if (reports.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <h3>No reports yet</h3>
+                            <p>Reports will appear here after training jobs complete.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Sort reports
+            const sorted = [...reports].sort((a, b) => {
+                let aVal, bVal;
+                if (currentSort.key === 'date') {
+                    aVal = new Date(a.date);
+                    bVal = new Date(b.date);
+                } else if (currentSort.key === 'name') {
+                    aVal = a.name;
+                    bVal = b.name;
+                } else if (currentSort.key === 'size') {
+                    aVal = a.size;
+                    bVal = b.size;
+                }
+
+                if (currentSort.order === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            tbody.innerHTML = sorted.map(report => {
+                const jobName = report.name.replace('eval_', '').replace('.html', '');
+                const date = new Date(report.date).toLocaleString();
+                const sizeKB = (report.size / 1024).toFixed(1);
+
+                return `
+                    <tr data-date="${report.date}">
+                        <td>
+                            <a href="#" class="report-link" onclick="viewReport('${report.name}', '${jobName}')">${jobName}</a>
+                        </td>
+                        <td class="date-cell">${date}</td>
+                        <td class="size-cell">${sizeKB} KB</td>
+                        <td>
+                            <button class="view-btn" onclick="viewReport('${report.name}', '${jobName}')">View Report</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('total-reports').textContent = reports.length;
+
+            if (reports.length > 0) {
+                const sorted = [...reports].sort((a, b) => new Date(b.date) - new Date(a.date));
+                const latest = new Date(sorted[0].date);
+                document.getElementById('latest-date').textContent =
+                    latest.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        async function viewReport(filename, jobName) {
+            const modal = document.getElementById('report-modal');
+            const iframe = document.getElementById('report-iframe');
+            const title = document.getElementById('modal-title');
+
+            title.textContent = jobName;
+            iframe.src = `${API_URL}/report/${filename}`;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('report-modal');
+            const iframe = document.getElementById('report-iframe');
+            modal.classList.remove('active');
+            iframe.src = '';
+        }
+
+        // Search functionality
+        document.getElementById('search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#reports-body tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Sort functionality
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                currentSort = {
+                    key: this.dataset.sort,
+                    order: this.dataset.order
+                };
+                renderReports();
+            });
+        });
+
+        // Column header sorting
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', function() {
+                const key = this.dataset.sort;
+                const newOrder = this.classList.contains('sorted-asc') ? 'desc' : 'asc';
+
+                document.querySelectorAll('th').forEach(t => {
+                    t.classList.remove('sorted-asc', 'sorted-desc');
+                });
+
+                this.classList.add('sorted-' + newOrder);
+                currentSort = { key, order: newOrder };
+                renderReports();
+            });
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Load reports on page load
+        loadReports();
+    </script>
+</body>
+</html>

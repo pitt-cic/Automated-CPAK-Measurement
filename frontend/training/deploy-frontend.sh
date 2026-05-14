@@ -1,16 +1,16 @@
 #!/bin/bash
 # Deploy Amplify frontend with API URL injected
 #
-# This script should be run after `cdk deploy` completes.
+# This script should be run after `cdk deploy --mode training` completes.
 # It reads the API URL from CloudFormation outputs and deploys
 # the frontend to Amplify with the config injected.
 #
-# Usage: ./deploy-frontend.sh [--region us-east-1] [--stack CpakInfraStack]
+# Usage: ./deploy-frontend.sh [--region us-east-1] [--stack CpakTrainingStack]
 
 set -e
 
 REGION="${AWS_DEFAULT_REGION:-us-east-1}"
-STACK_NAME="CpakInfraStack"
+STACK_NAME="CpakTrainingStack"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -52,7 +52,7 @@ AMPLIFY_APP_ID=$(aws cloudformation describe-stacks \
     --output text)
 
 if [ -z "$API_URL" ] || [ -z "$AMPLIFY_APP_ID" ]; then
-    echo "Error: Could not get stack outputs. Make sure 'cdk deploy' has completed."
+    echo "Error: Could not get stack outputs. Make sure 'cd infra && npm run deploy -- --mode training' has completed."
     exit 1
 fi
 
@@ -61,7 +61,7 @@ echo "  Amplify App ID: $AMPLIFY_APP_ID"
 
 # Get the frontend directory (relative to this script)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FRONTEND_DIR="$SCRIPT_DIR/../amplify_frontend"
+FRONTEND_DIR="$SCRIPT_DIR"
 
 if [ ! -f "$FRONTEND_DIR/index.html" ]; then
     echo "Error: Frontend not found at $FRONTEND_DIR/index.html"
