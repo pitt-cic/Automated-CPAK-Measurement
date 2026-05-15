@@ -101,7 +101,7 @@ The U-Net model was trained on over 300 manually annotated long-leg radiographs 
 
 # Model Training
 
-See the [User Guide](docs/user-guide.md#training-pipeline) for detailed instructions on:
+See the [User Guide](docs/USERGUIDE.md#training-pipeline) for detailed instructions on:
 - Getting data from NIH
 - Annotating X-ray images
 - Uploading data to S3
@@ -112,7 +112,7 @@ See the [User Guide](docs/user-guide.md#training-pipeline) for detailed instruct
 
 # Deployment
 
-For full deployment instructions, see the [User Guide](docs/user-guide.md#application-pipeline).
+For full deployment instructions, see the [User Guide](docs/USERGUIDE.md#application-pipeline).
 
 ## Quick Start
 
