@@ -34,11 +34,10 @@ annotate/
 │   ├── toBeAnnotated/    # Place your PNG images here
 │   ├── output/           # Completed annotations moved here
 │   └── skipped/          # Skipped images moved here
-├── model/
-│   ├── best_model.pt     # Place your trained model here (for V3 only)
-│   └── model.py          # Model definition (for V3 only)
+├── checkpoints/
+│   └── best_model.pt     # Place your trained model here (for model-assisted only)
 ├── annotate.py
-├── annotate_v3_perf_only.py
+├── annotate_with_model.py
 ├── requirements.txt
 └── README.md
 ```
@@ -80,7 +79,7 @@ Use this tool when you don't have a trained model yet. You manually click to pla
 7. Inner Lower (knee joint line - medial side)
 8. Outer Lower (knee joint line - lateral side)
 
-## Tool 2: Model-Assisted Annotation (`annotate_v3_perf_only.py`)
+## Tool 2: Model-Assisted Annotation (`annotate_with_model.py`)
 
 Use this tool after you have trained a model. The model predicts keypoint positions, and you drag to refine them.
 
@@ -89,16 +88,15 @@ Use this tool after you have trained a model. The model predicts keypoint positi
 1. Train a keypoint detection model
 2. Place the trained model checkpoint at:
    ```
-   model/best_model.pt
+   checkpoints/best_model.pt
    ```
-3. Ensure `model/model.py` contains the `UNetWithIntermediateSupervision` class
 
 ### Usage
 
 1. Place your PNG X-ray images in `data/toBeAnnotated/`
 2. Run the tool:
    ```bash
-   python annotate_v3_perf_only.py
+   python annotate_with_model.py
    ```
 3. For each image:
    - The model automatically predicts all 8 keypoints
@@ -145,7 +143,7 @@ Annotations are saved to `data/annotations.json` in the following format:
 |-----|--------|
 | Enter | Confirm current leg / Save and next |
 | S | Skip current image |
-| R | Reset points (manual: clear all, V3: re-predict) |
+| R | Reset points (manual: clear all, model-assisted: re-predict) |
 | U | Undo last point (manual mode only) |
 
 ## Mouse Controls
