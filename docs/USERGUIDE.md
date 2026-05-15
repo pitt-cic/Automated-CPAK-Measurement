@@ -252,26 +252,73 @@ python launch_training.py \
 
 Model artifacts are saved to `s3://{bucket}/model-output/`.
 
-## 6. Convert Model to ONNX
-
-After training, convert the PyTorch model to ONNX for inference:
-
+## 6. Converting a Trained Model to ONNX
+ 
+After training completes on SageMaker, you'll have a PyTorch checkpoint (`.pt` file) that needs to be converted to ONNX format for inference.
+ 
+### 1. Download the model from SageMaker
+ 
+1. Open the [S3 Console](https://console.aws.amazon.com/s3/)
+2. Find your CPAK bucket (created by the training stack)
+3. Navigate to `models/<job-name>/`
+4. Download `model.tar.gz`
+5. Extract it locally:
+ 
+```bash
+tar -xzf model.tar.gz
+```
+ 
+This extracts `best_model.pt`.
+ 
+### 2. Place the model in the convert folder
+ 
+```bash
+mkdir -p training/convert/models
+cp best_model.pt training/convert/models/unet.pt
+```
+ 
+### 3. Run the conversion
+ 
 ```bash
 cd training/convert
-
-# Download your trained model from S3
-aws s3 cp s3://{bucket}/model-output/{job-name}/output/model.tar.gz .
-tar -xzf model.tar.gz -C ./models/
-
-# Rename to expected filename
-mv ./models/best_model.pt ./models/unet.pt
-
-# Convert to ONNX
-pip install torch onnx
 python convert_to_onnx.py
 ```
-
-The ONNX model is saved to `./models/unet.onnx`.
+ 
+The script reads hyperparameters (width, height, base_channels, heatmap_scale) from the checkpoint's saved args, so it will match your training configuration automatically.
+ 
+Output: `training/convert/models/unet.onnx`
+ 
+### 4. Deploy the ONNX model
+ 
+Copy the converted model to the inference Lambda:
+ 
+```bash
+cp training/convert/models/unet.onnx backend/lambda/inference/models/unet.onnx
+```
+ 
+Then deploy the inference stack:
+ 
+```bash
+./deploy.sh
+# Select option 1 (Inference)
+```
+ 
+## Requirements
+ 
+The conversion script requires:
+- `torch`
+- `onnx`
+ 
+Install with: `pip install torch onnx`
+ 
+## Important: Model Dimensions
+ 
+The inference Lambda expects models trained with these specific parameters:
+- `width`: 384
+- `height`: 2688
+- `heatmap-scale`: 2
+ 
+These are the defaults in `train_sagemaker.py`. If you train with different dimensions, you'll need to update the constants in `backend/lambda/inference/handler_onnx.py` and redeploy.
 
 ---
 
