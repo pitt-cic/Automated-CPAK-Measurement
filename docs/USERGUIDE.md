@@ -9,8 +9,8 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 - [Training Pipeline](#training-pipeline)
   - [1. Get Data from NIH](#1-get-data-from-nih)
   - [2. Annotate Data](#2-annotate-data)
-  - [3. Upload Data to S3](#3-upload-data-to-s3)
-  - [4. Deploy Training Infrastructure](#4-deploy-training-infrastructure)
+  - [3. Deploy Training Infrastructure](#3-deploy-training-infrastructure)
+  - [4. Upload Data to S3](#4-upload-data-to-s3)
   - [5. Run Training](#5-run-training)
   - [6. Convert Model to ONNX](#6-convert-model-to-onnx)
 - [Application Pipeline](#application-pipeline)
@@ -28,7 +28,7 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 
 Training data comes from the NIH Osteoarthritis Initiative (OAI) dataset. To access this data:
 
-1. Visit the NIMH Data Archive: [TODO: Add NIH link]
+1. Visit the NIMH Data Archive: https://nda.nih.gov/oai
 2. Request access to the OAI dataset
 3. Download long-leg radiograph images (PNG format recommended)
 4. Place images in the annotation folder structure (see next step)
@@ -78,16 +78,16 @@ python annotate.py
 - Press **U** to undo the last point
 - Press **R** to reset all points
 
-**Option B: Model-Assisted Annotation (`annotate_v3_perf_only.py`)**
+**Option B: Model-Assisted Annotation (`annotate_with_model.py`)**
 
 Use this after you have a trained model to speed up annotation:
 
 ```bash
-python annotate_v3_perf_only.py
+python annotate_with_model.py
 ```
 
 Prerequisites:
-- Place your trained model at `training/annotate/model/best_model.pt`
+- Place your trained model at `training/annotate/checkpoints/best_model.pt`
 - The model predicts keypoints automatically; you drag to refine
 
 Controls:
@@ -115,7 +115,26 @@ Controls:
 
 Annotations are saved to `training/annotate/data/annotations.json`. Completed images move to `data/output/`.
 
-## 3. Upload Data to S3
+## 3. Deploy Training Infrastructure
+
+Deploy the training stack (S3 bucket, SageMaker permissions, training reports frontend):
+
+```bash
+./deploy.sh
+```
+
+Select option **2) Training (infrastructure + frontend)**
+
+Or deploy manually:
+
+```bash
+cd infra
+npm install
+npm run build
+npx cdk deploy -c mode=training
+```
+
+## 4. Upload Data to S3
 
 After annotating, organize your data in the following structure:
 
@@ -158,25 +177,6 @@ Alternatively, upload directly with AWS CLI:
 
 ```bash
 aws s3 cp /path/to/your-data-folder s3://{bucket-name}/ --recursive 
-```
-
-## 4. Deploy Training Infrastructure
-
-Deploy the training stack (S3 bucket, SageMaker permissions, training reports frontend):
-
-```bash
-./deploy.sh
-```
-
-Select option **2) Training (infrastructure + frontend)**
-
-Or deploy manually:
-
-```bash
-cd infra
-npm install
-npm run build
-npx cdk deploy -c mode=training
 ```
 
 ## 5. Run Training
@@ -235,20 +235,20 @@ python launch_training.py \
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--width` | 256 | Input image width |
-| `--height` | 1024 | Input image height |
+| `--width` | 384 | Input image width |
+| `--height` | 2688 | Input image height |
 | `--base-channels` | 16 | Base channel count for U-Net |
-| `--heatmap-scale` | 4 | Heatmap downscale factor |
-| `--sigma` | 15.0 | Gaussian heatmap spread |
+| `--heatmap-scale` | 2 | Heatmap downscale factor |
+| `--sigma` | 10.0 | Gaussian heatmap spread |
 
 **Loss Function:**
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `--loss-alpha` | 10.0 | Weighting for peak regions in loss |
-| `--peak-weight` | 0.10 | Weight for explicit peak penalty |
+| `--peak-weight` | 0.1 | Weight for explicit peak penalty |
 | `--aux-weight` | 0.3 | Weight for auxiliary head loss |
-| `--use-keypoint-weights` | False | Use per-keypoint loss weights (flag) |
+| `--use-keypoint-weights` | True | Use per-keypoint loss weights (flag) |
 
 Model artifacts are saved to `s3://{bucket}/model-output/`.
 
@@ -260,7 +260,7 @@ After training completes on SageMaker, you'll have a PyTorch checkpoint (`.pt` f
  
 1. Open the [S3 Console](https://console.aws.amazon.com/s3/)
 2. Find your CPAK bucket (created by the training stack)
-3. Navigate to `models/<job-name>/`
+3. Navigate to `model-output/<job-name>/output/`
 4. Download `model.tar.gz`
 5. Extract it locally:
  
@@ -354,7 +354,7 @@ This deploys:
 Place your ONNX model in the Lambda container. The model file should be included in the backend container image:
 
 ```
-backend/inference/model/unet.onnx
+backend/lambda/inference/models/unet.onnx
 ```
 
 If updating an existing deployment, rebuild and redeploy:
