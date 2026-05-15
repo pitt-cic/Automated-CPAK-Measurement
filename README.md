@@ -36,7 +36,7 @@ This repository contains both the inference application (deployable to AWS) and 
 
 # Demo
 
-*Coming soon*
+https://github.com/user-attachments/assets/1ece1945-87a5-4412-a676-07bc933ecec8
 
 ---
 
@@ -124,15 +124,15 @@ For full deployment instructions, see the [User Guide](docs/USERGUIDE.md#applica
 ./deploy.sh
 ```
 
-Select option **1) Inference** to deploy the full application (infrastructure + frontend), or option **3) Everything** to deploy both inference and training stacks.
+Select option **1) Inference** to deploy the inference application (infrastructure + frontend), or option **3) Everything** to deploy both inference and training stacks.
 
 ---
 
 # Usage
 
-1. **Access the Application** — Open the Amplify URL displayed after frontend deployment
+1. **Access the Application** — Run `./deploy.sh` and select option **6) Show frontend URLs** to get the Amplify URL
 
-2. **Create a User** — Users must be created manually in the AWS Cognito Console. Navigate to the User Pool and create a new user with an email and temporary password.
+2. **Invite Users** — Run `./deploy.sh` and select option **5) Invite user to inference app**. Enter the user's email address—they'll receive a temporary password via email.
 
 3. **Log In** — Enter your credentials. On first login, you'll be prompted to set a new password.
 
@@ -218,7 +218,7 @@ This project is licensed under the [MIT License](./LICENSE).
 ```plaintext
 MIT License
 
-Copyright (c) [YEAR] University of Pittsburgh Health Sciences and Sports Analytics Cloud Innovation Center
+Copyright (c) 2026 University of Pittsburgh Health Sciences and Sports Analytics Cloud Innovation Center
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -241,7 +241,7 @@ SOFTWARE.
 
 ---
 
-For questions, issues, or contributions, please visit our [GitHub repository](https://github.com/[org]/[repo]) or
+For questions, issues, or contributions, please visit our [GitHub repository](https://github.com/pitt-cic/Automated-CPAK-Measurement) or
 contact the development team.
 
 ---
