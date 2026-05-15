@@ -101,68 +101,30 @@ The U-Net model was trained on over 300 manually annotated long-leg radiographs 
 
 # Model Training
 
-*Coming soon*
+See the [User Guide](docs/user-guide.md#training-pipeline) for detailed instructions on:
+- Getting data from NIH
+- Annotating X-ray images
+- Uploading data to S3
+- Running SageMaker training jobs
+- Converting models to ONNX
 
 ---
 
 # Deployment
 
-## Prerequisites
+For full deployment instructions, see the [User Guide](docs/user-guide.md#application-pipeline).
 
-1. An [AWS account](https://signin.aws.amazon.com/signup?request_type=register)
-2. **Node.js 24+** — [Download here](https://nodejs.org/) or use [nvm](https://github.com/nvm-sh/nvm)
-3. **AWS CLI** — [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-4. **AWS CDK** — install via npm:
-   ```bash
-   npm install -g aws-cdk
-   ```
-5. **Docker** — [Download here](https://www.docker.com/get-started/) (required for Lambda container build)
+## Quick Start
 
-## AWS Configuration
-
-1. **Configure AWS credentials:**
-   ```bash
-   aws configure
-   ```
-
-2. **Verify credentials are working:**
-   ```bash
-   aws sts get-caller-identity
-   ```
-
-## Deploy Infrastructure
-
-Deploy the backend infrastructure (Lambda, API Gateway, Cognito, Amplify):
+1. Ensure prerequisites are installed: Node.js 24+, AWS CLI, Docker
+2. Configure AWS credentials: `aws configure`
+3. Run the interactive deployment script:
 
 ```bash
-cd infra
-npm install
-npm run deploy
+./deploy.sh
 ```
 
-The deploy script will:
-- Build TypeScript
-- Bootstrap CDK (first time only)
-- Deploy the CloudFormation stack
-
-On first run, Docker will build the Lambda container image which may take several minutes.
-
-## Deploy Frontend
-
-After infrastructure is deployed, deploy the frontend to Amplify:
-
-```bash
-cd frontend
-npm install
-npm run deploy
-```
-
-The deploy script will:
-- Fetch environment variables from CloudFormation outputs
-- Build the React application
-- Upload and deploy to AWS Amplify
-
-The deployment URL will be displayed when complete.
+Select option **1) Inference** to deploy the full application (infrastructure + frontend), or option **3) Everything** to deploy both inference and training stacks.
 
 ---
 
