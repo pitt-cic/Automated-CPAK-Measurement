@@ -1,3 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+
 # Virtual environments
 /.venv/
 
@@ -20,11 +24,12 @@
 /infra/package-lock.json
 /infra/dist/
 
-# Backend
-/backend/lambda/inference/models/
-
 # Data (training data, not committed)
 /data/
 
 # Dev-only files
 DEVELOPER_GUIDE.md
+
+# Models (anywhere in repo)
+**/models/*
+!**/models/.gitkeep

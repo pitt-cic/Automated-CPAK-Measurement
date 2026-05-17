@@ -90,6 +90,16 @@ check_prerequisites() {
 
 # Deploy inference infrastructure
 deploy_inference_infra() {
+    # Check for required model file
+    local model_file="$REPO_ROOT/backend/lambda/inference/models/unet.onnx"
+    if [[ ! -f "$model_file" ]]; then
+        print_error "Model file not found: backend/lambda/inference/models/unet.onnx"
+        echo ""
+        echo "The inference Lambda requires a trained model to function."
+        echo "Please copy your unet.onnx model file to this location before deploying."
+        return 1
+    fi
+
     print_info "Deploying inference infrastructure..."
     cd "$INFRA_DIR"
     npm install

@@ -273,7 +273,6 @@ This extracts `best_model.pt`.
 ### 2. Place the model in the convert folder
  
 ```bash
-mkdir -p training/convert/models
 cp best_model.pt training/convert/models/unet.pt
 ```
  
