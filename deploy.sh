@@ -194,7 +194,7 @@ upload_training_data() {
     print_info "Uploading $data_path to s3://$bucket_name/ ..."
     echo ""
 
-    aws s3 sync "$data_path" "s3://$bucket_name/" --progress
+    aws s3 sync "$data_path" "s3://$bucket_name/"
 
     echo ""
     print_success "Upload complete!"

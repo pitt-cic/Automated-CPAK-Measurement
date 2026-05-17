@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib/core';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as amplify from 'aws-cdk-lib/aws-amplify';
@@ -51,6 +52,13 @@ export class InferenceStack extends cdk.Stack {
             preventUserExistenceErrors: true,
         });
 
+        // Log group for inference Lambda (auto-deleted with stack)
+        const inferenceLogGroup = new logs.LogGroup(this, 'InferenceLogGroup', {
+            logGroupName: '/aws/lambda/cpak-inference',
+            retention: logs.RetentionDays.ONE_WEEK,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+        });
+
         // CPAK Inference Lambda (container-based for PyTorch)
         const inferenceFunction = new lambda.DockerImageFunction(this, 'InferenceFunction', {
             code: lambda.DockerImageCode.fromImageAsset('../backend/lambda/inference', {
@@ -60,6 +68,7 @@ export class InferenceStack extends cdk.Stack {
             memorySize: 4096,
             timeout: cdk.Duration.seconds(29),
             functionName: 'cpak-inference',
+            logGroup: inferenceLogGroup,
         });
 
         const api = new apigateway.RestApi(this, 'CpakApi', {
