@@ -190,6 +190,33 @@ upload_training_data() {
         return 1
     fi
 
+    # Validate folder structure
+    print_info "Validating folder structure..."
+    local validation_failed=false
+
+    for split in train val test; do
+        local split_dir="$data_path/output/$split"
+        local images_dir="$split_dir/images"
+        local annotations_file="$split_dir/annotations.json"
+
+        if [[ ! -d "$images_dir" ]]; then
+            print_error "Missing: output/$split/images/"
+            validation_failed=true
+        fi
+
+        if [[ ! -f "$annotations_file" ]]; then
+            print_error "Missing: output/$split/annotations.json"
+            validation_failed=true
+        fi
+    done
+
+    if [[ "$validation_failed" == true ]]; then
+        echo ""
+        print_error "Folder structure validation failed. Please ensure your data matches the expected structure."
+        return 1
+    fi
+
+    print_success "Folder structure validated"
     echo ""
     print_info "Uploading $data_path to s3://$bucket_name/ ..."
     echo ""
