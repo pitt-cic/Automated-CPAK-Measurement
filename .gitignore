@@ -4,6 +4,7 @@ __pycache__/
 
 # Virtual environments
 /.venv/
+/training/venv/
 
 # IDE
 /.idea/
@@ -24,8 +25,9 @@ __pycache__/
 /infra/package-lock.json
 /infra/dist/
 
-# Data (training data, not committed)
-/data/
+# Assisted annotation checkpoints (keep folder, ignore contents)
+/training/annotate/checkpoints/*
+!/training/annotate/checkpoints/.gitkeep
 
 # Dev-only files
 DEVELOPER_GUIDE.md
@@ -35,6 +37,7 @@ DEVELOPER_GUIDE.md
 !**/models/.gitkeep
 
 # Annotation data folders (keep folders, ignore contents)
+/training/annotate/data/annotations.json
 /training/annotate/data/toBeAnnotated/*
 /training/annotate/data/output/*
 /training/annotate/data/skipped/*

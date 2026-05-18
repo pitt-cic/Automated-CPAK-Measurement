@@ -7,6 +7,7 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 ## Table of Contents
 
 - [Training Pipeline](#training-pipeline)
+  - [Setup](#setup)
   - [1. Get Data from NIH](#1-get-data-from-nih)
   - [2. Annotate Data](#2-annotate-data)
   - [3. Deploy Training Infrastructure](#3-deploy-training-infrastructure)
@@ -24,6 +25,24 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 
 # Training Pipeline
 
+## Setup
+
+Before starting, set up the Python environment for all training tools:
+
+```bash
+cd training
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # macOS/Linux
+# OR: venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+This environment covers annotation, model conversion, and SageMaker job launching.
+
 ## 1. Get Data from NIH
 
 Training data comes from the NIH Osteoarthritis Initiative (OAI) dataset. To access this data:
@@ -36,20 +55,6 @@ Training data comes from the NIH Osteoarthritis Initiative (OAI) dataset. To acc
 ## 2. Annotate Data
 
 The repository includes annotation tools for labeling keypoints on X-ray images.
-
-### Setup
-
-```bash
-cd training/annotate
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # macOS/Linux
-# OR: venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-```
 
 ### Place Your Images
 
@@ -185,15 +190,11 @@ aws s3 cp /path/to/your-data-folder s3://{bucket-name}/ --recursive
 > 4. Request a value of at least 1
 > 5. Wait for approval
 
-Launch a SageMaker training job:
+Launch a SageMaker training job (ensure the training venv is activated):
 
 ```bash
 cd training/sagemaker
 
-# Install SageMaker SDK v2
-pip install sagemaker==2.257.1
-
-# Launch training
 python launch_training.py \
     --role arn:aws:iam::YOUR_ACCOUNT:role/YOUR_SAGEMAKER_ROLE \
     --output-bucket OUTPUT_BUCKET_NAME \
@@ -281,39 +282,33 @@ cp best_model.pt training/convert/models/unet.pt
 ```
  
 ### 3. Run the conversion
- 
+
+Ensure the training venv is activated, then:
+
 ```bash
 cd training/convert
 python convert_to_onnx.py
 ```
- 
+
 The script reads hyperparameters (width, height, base_channels, heatmap_scale) from the checkpoint's saved args, so it will match your training configuration automatically.
- 
+
 Output: `training/convert/models/unet.onnx`
- 
+
 ### 4. Deploy the ONNX model
- 
+
 Copy the converted model to the inference Lambda:
- 
+
 ```bash
 cp training/convert/models/unet.onnx backend/lambda/inference/models/unet.onnx
 ```
- 
+
 Then deploy the inference stack:
- 
+
 ```bash
 ./deploy.sh
 # Select option 1 (Inference)
 ```
- 
-## Requirements
- 
-The conversion script requires:
-- `torch`
-- `onnx`
- 
-Install with: `pip install torch onnx`
- 
+
 ## Important: Model Dimensions
  
 The inference Lambda expects models trained with these specific parameters:
