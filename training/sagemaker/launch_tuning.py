@@ -87,7 +87,7 @@ def launch_tuning(args):
 
     print(f"SageMaker session region: {session.boto_region_name}")
     print(f"Using role: {args.role}")
-    print(f"S3 data path: {args.s3_data}")
+    print(f"Training data URI: {args.training_data_uri}")
     print(f"Max jobs: {args.max_jobs}, Max parallel: {args.max_parallel_jobs}")
 
     # Create base PyTorch estimator
@@ -100,8 +100,8 @@ def launch_tuning(args):
         framework_version='2.1.0',
         py_version='py310',
         hyperparameters=get_static_hyperparameters(args),
-        output_path=f's3://{args.s3_bucket}/tuning-output',
-        code_location=f's3://{args.s3_bucket}/code',
+        output_path=f's3://{args.output_bucket}/tuning-output',
+        code_location=f's3://{args.output_bucket}/code',
         max_run=args.max_run * 3600,  # Convert hours to seconds
         metric_definitions=get_metric_definitions(),
     )
@@ -124,7 +124,7 @@ def launch_tuning(args):
     print(f"Tuning {len(get_hyperparameter_ranges())} hyperparameters")
     print(f"Objective: Minimize val_loss")
 
-    tuner.fit({'training': args.s3_data})
+    tuner.fit({'training': args.training_data_uri})
 
     print(f"\nTuning job started: {tuner.latest_tuning_job.name}")
     print(f"\nMonitor at:")
@@ -144,10 +144,10 @@ if __name__ == "__main__":
                         help='SageMaker execution role ARN (e.g., arn:aws:iam::123456789:role/SageMakerRole)')
 
     # S3 paths
-    parser.add_argument('--s3-bucket', type=str, default='cpak',
-                        help='S3 bucket name (default: cpak)')
-    parser.add_argument('--s3-data', type=str, default='s3://cpak/',
-                        help='S3 path to training data (default: s3://cpak/)')
+    parser.add_argument('--output-bucket', type=str, default='cpak',
+                        help='S3 bucket for tuning outputs (default: cpak)')
+    parser.add_argument('--training-data-uri', type=str, default='s3://cpak/',
+                        help='S3 URI to training data (default: s3://cpak/)')
 
     # Instance
     parser.add_argument('--instance-type', type=str, default='ml.g4dn.xlarge',

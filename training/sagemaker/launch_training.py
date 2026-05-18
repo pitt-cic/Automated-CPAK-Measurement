@@ -33,7 +33,7 @@ def launch_training(args):
 
     print(f"SageMaker session region: {session.boto_region_name}")
     print(f"Using role: {args.role}")
-    print(f"S3 data path: {args.s3_data}")
+    print(f"Training data URI: {args.training_data_uri}")
 
     # Define the PyTorch estimator
     estimator = PyTorch(
@@ -62,14 +62,14 @@ def launch_training(args):
             'cosine-t0': args.cosine_t0,
             'use-keypoint-weights': args.use_keypoint_weights,
         },
-        output_path=f's3://{args.s3_bucket}/model-output',
-        code_location=f's3://{args.s3_bucket}/code',
+        output_path=f's3://{args.output_bucket}/model-output',
+        code_location=f's3://{args.output_bucket}/code',
         max_run=args.max_run * 3600,  # Convert hours to seconds
     )
 
     # Start training
     print("\nStarting training job...")
-    estimator.fit({'training': args.s3_data}, job_name=args.job_name)
+    estimator.fit({'training': args.training_data_uri}, job_name=args.job_name)
 
     print(f"\nTraining complete!")
     print(f"Model artifacts: {estimator.model_data}")
@@ -83,10 +83,10 @@ if __name__ == "__main__":
                         help='SageMaker execution role ARN (e.g., arn:aws:iam::123456789:role/SageMakerRole)')
 
     # S3 paths
-    parser.add_argument('--s3-bucket', type=str, default='cpak',
-                        help='S3 bucket name (default: cpak)')
-    parser.add_argument('--s3-data', type=str, default='s3://cpak/',
-                        help='S3 path to training data (default: s3://cpak/)')
+    parser.add_argument('--output-bucket', type=str, default='cpak',
+                        help='S3 bucket for training outputs (default: cpak)')
+    parser.add_argument('--training-data-uri', type=str, default='s3://cpak/',
+                        help='S3 URI to training data (default: s3://cpak/)')
 
     # Instance
     parser.add_argument('--instance-type', type=str, default='ml.g4dn.xlarge',

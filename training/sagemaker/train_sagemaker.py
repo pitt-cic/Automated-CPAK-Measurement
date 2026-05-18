@@ -739,7 +739,7 @@ def train(args):
     # Upload HTML report to S3
     job_name = os.environ.get('TRAINING_JOB_NAME',
                               os.environ.get('SAGEMAKER_JOB_NAME', 'local-training'))
-    s3_bucket = args.s3_bucket
+    output_bucket = args.output_bucket
 
     # Pass hyperparameters to report
     hyperparameters = {
@@ -759,7 +759,7 @@ def train(args):
         'input_size': f"{args.width}x{args.height}",
     }
 
-    upload_report_to_s3(results, job_name, s3_bucket, best_checkpoint.get('epoch', 0), hyperparameters)
+    upload_report_to_s3(results, job_name, output_bucket, best_checkpoint.get('epoch', 0), hyperparameters)
 
 
 if __name__ == "__main__":
@@ -793,7 +793,7 @@ if __name__ == "__main__":
     parser.add_argument('--cosine-t0', type=int, default=20, help='Cosine annealing T_0 (restart period)')
 
     # S3 bucket for report upload
-    parser.add_argument('--s3-bucket', type=str, default='cpak2', help='S3 bucket for uploading evaluation report')
+    parser.add_argument('--output-bucket', type=str, default='cpak2', help='S3 bucket for uploading evaluation report')
 
     args = parser.parse_args()
 
