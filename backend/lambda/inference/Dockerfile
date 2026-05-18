@@ -1,8 +1,9 @@
-FROM public.ecr.aws/lambda/python:3.11
+FROM public.ecr.aws/lambda/python:3.12
 
-# Install ONNX Runtime and dependencies (much faster than PyTorch)
+# Install ONNX Runtime and dependencies
+# onnxruntime 1.17+ required for ONNX IR version 10 (exported by PyTorch 2.2+)
 RUN pip install --no-cache-dir \
-    onnxruntime==1.16.3 \
+    onnxruntime==1.19.2 \
     "numpy<2" \
     pillow
 

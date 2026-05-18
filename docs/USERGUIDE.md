@@ -7,6 +7,7 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 ## Table of Contents
 
 - [Training Pipeline](#training-pipeline)
+  - [Setup](#setup)
   - [1. Get Data from NIH](#1-get-data-from-nih)
   - [2. Annotate Data](#2-annotate-data)
   - [3. Deploy Training Infrastructure](#3-deploy-training-infrastructure)
@@ -14,8 +15,8 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
   - [5. Run Training](#5-run-training)
   - [6. Convert Model to ONNX](#6-convert-model-to-onnx)
 - [Application Pipeline](#application-pipeline)
-  - [1. Deploy Infrastructure](#1-deploy-infrastructure)
-  - [2. Upload the Model](#2-upload-the-model)
+  - [1. Place the Model](#1-place-the-model)
+  - [2. Deploy Infrastructure](#2-deploy-infrastructure)
   - [3. Deploy Frontend](#3-deploy-frontend)
   - [4. Invite Users](#4-invite-users)
   - [5. Access the Application](#5-access-the-application)
@@ -23,6 +24,24 @@ This guide covers how to use the CPAK (Coronal Plane Alignment of the Knee) syst
 ---
 
 # Training Pipeline
+
+## Setup
+
+Before starting, set up the Python environment for all training tools:
+
+```bash
+cd training
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # macOS/Linux
+# OR: venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+This environment covers annotation, model conversion, and SageMaker job launching.
 
 ## 1. Get Data from NIH
 
@@ -36,23 +55,6 @@ Training data comes from the NIH Osteoarthritis Initiative (OAI) dataset. To acc
 ## 2. Annotate Data
 
 The repository includes annotation tools for labeling keypoints on X-ray images.
-
-### Setup
-
-```bash
-cd training/annotate
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # macOS/Linux
-# OR: venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create required directories
-mkdir -p data/toBeAnnotated data/output data/skipped
-```
 
 ### Place Your Images
 
@@ -181,19 +183,22 @@ aws s3 cp /path/to/your-data-folder s3://{bucket-name}/ --recursive
 
 ## 5. Run Training
 
-Launch a SageMaker training job:
+**Note:** Your AWS account may have zero quota for GPU training instances by default. Before running training, you may need to request a quota increase:
+> 1. Go to [Service Quotas Console](https://console.aws.amazon.com/servicequotas/home/services/sagemaker/quotas)
+> 2. Search for "ml.g4dn.xlarge for training job usage"
+> 3. Click on the quota and select "Request increase at account level"
+> 4. Request a value of at least 1
+> 5. Wait for approval
+
+Launch a SageMaker training job (ensure the training venv is activated):
 
 ```bash
 cd training/sagemaker
 
-# Install SageMaker SDK v2
-pip install sagemaker==2.257.1
-
-# Launch training
 python launch_training.py \
     --role arn:aws:iam::YOUR_ACCOUNT:role/YOUR_SAGEMAKER_ROLE \
-    --s3-bucket YOUR_BUCKET_NAME \
-    --s3-data s3://YOUR_BUCKET_NAME/
+    --output-bucket OUTPUT_BUCKET_NAME \
+    --training-data-uri s3://DATA_BUCKET_NAME/output/
 ```
 
 ### Training Parameters
@@ -208,8 +213,8 @@ python launch_training.py \
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `--s3-bucket` | `cpak` | S3 bucket name |
-| `--s3-data` | `s3://cpak/` | S3 path to training data |
+| `--output-bucket` | `cpak` | S3 bucket for training outputs <br> (can be the same as data bucket)|
+| `--training-data-uri` | `s3://cpak/` | S3 URI to training data |
 
 **Instance:**
 
@@ -273,44 +278,37 @@ This extracts `best_model.pt`.
 ### 2. Place the model in the convert folder
  
 ```bash
-mkdir -p training/convert/models
 cp best_model.pt training/convert/models/unet.pt
 ```
  
 ### 3. Run the conversion
- 
+
+Ensure the training venv is activated, then:
+
 ```bash
 cd training/convert
 python convert_to_onnx.py
 ```
- 
+
 The script reads hyperparameters (width, height, base_channels, heatmap_scale) from the checkpoint's saved args, so it will match your training configuration automatically.
- 
+
 Output: `training/convert/models/unet.onnx`
- 
+
 ### 4. Deploy the ONNX model
- 
+
 Copy the converted model to the inference Lambda:
- 
+
 ```bash
 cp training/convert/models/unet.onnx backend/lambda/inference/models/unet.onnx
 ```
- 
+
 Then deploy the inference stack:
- 
+
 ```bash
 ./deploy.sh
 # Select option 1 (Inference)
 ```
- 
-## Requirements
- 
-The conversion script requires:
-- `torch`
-- `onnx`
- 
-Install with: `pip install torch onnx`
- 
+
 ## Important: Model Dimensions
  
 The inference Lambda expects models trained with these specific parameters:
@@ -324,7 +322,17 @@ These are the defaults in `train_sagemaker.py`. If you train with different dime
 
 # Application Pipeline
 
-## 1. Deploy Infrastructure
+## 1. Place the Model
+
+The ONNX model must be in place before deploying, as it's baked into the Lambda container image:
+
+```
+backend/lambda/inference/models/unet.onnx
+```
+
+If you trained your own model, follow the [conversion steps](#6-converting-a-trained-model-to-onnx) to generate this file.
+
+## 2. Deploy Infrastructure
 
 Deploy the inference stack (Lambda, API Gateway, Cognito, Amplify):
 
@@ -344,26 +352,12 @@ npx cdk deploy -c mode=inference
 ```
 
 This deploys:
-- Lambda function for model inference (container-based)
+- Lambda function for model inference (container-based, includes the ONNX model)
 - API Gateway REST endpoint
 - Cognito user pool for authentication
 - Amplify hosting for the frontend
 
-## 2. Upload the Model
-
-Place your ONNX model in the Lambda container. The model file should be included in the backend container image:
-
-```
-backend/lambda/inference/models/unet.onnx
-```
-
-If updating an existing deployment, rebuild and redeploy:
-
-```bash
-cd infra
-npm run build
-npx cdk deploy -c mode=inference
-```
+To update the model after initial deployment, replace the file and redeploy
 
 ## 3. Deploy Frontend
 

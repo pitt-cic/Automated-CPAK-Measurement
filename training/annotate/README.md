@@ -4,29 +4,21 @@ Tools for annotating keypoints on lower limb X-ray images.
 
 ## Setup
 
-### 1. Create a Python virtual environment
+If you haven't already, set up the training environment from the parent directory:
 
-**macOS/Linux:**
 ```bash
+cd training
+
+# Create virtual environment
 python3 -m venv venv
-source venv/bin/activate
-```
+source venv/bin/activate  # macOS/Linux
+# OR: venv\Scripts\activate  # Windows
 
-**Windows:**
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 2. Install dependencies
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
 ## Directory Structure
-
-Before running the tools, create the following directory structure:
 
 ```
 annotate/
@@ -38,14 +30,10 @@ annotate/
 │   └── best_model.pt     # Place your trained model here (for model-assisted only)
 ├── annotate.py
 ├── annotate_with_model.py
-├── requirements.txt
 └── README.md
 ```
 
-Create the data directories:
-```bash
-mkdir -p data/toBeAnnotated data/output data/skipped
-```
+The data directories are included in the repository (initially empty).
 
 ## Tool 1: Manual Annotation (`annotate.py`)
 

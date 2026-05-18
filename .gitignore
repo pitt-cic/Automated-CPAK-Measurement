@@ -1,5 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
 # Virtual environments
 /.venv/
+/training/venv/
 
 # IDE
 /.idea/
@@ -20,11 +25,20 @@
 /infra/package-lock.json
 /infra/dist/
 
-# Backend
-/backend/lambda/inference/models/
-
-# Data (training data, not committed)
-/data/
+# Assisted annotation checkpoints (keep folder, ignore contents)
+/training/annotate/checkpoints/*
+!/training/annotate/checkpoints/.gitkeep
 
 # Dev-only files
 DEVELOPER_GUIDE.md
+
+# Models (anywhere in repo)
+**/models/*
+!**/models/.gitkeep
+
+# Annotation data folders (keep folders, ignore contents)
+/training/annotate/data/annotations.json
+/training/annotate/data/toBeAnnotated/*
+/training/annotate/data/output/*
+/training/annotate/data/skipped/*
+!/training/annotate/data/*/.gitkeep

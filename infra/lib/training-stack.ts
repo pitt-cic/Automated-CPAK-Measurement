@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import * as apigwv2_integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as amplify from '@aws-cdk/aws-amplify-alpha';
@@ -93,6 +94,12 @@ export class TrainingStack extends cdk.Stack {
         // ===========================================
         // Lambda Function for Reports API
         // ===========================================
+        const reportsLogGroup = new logs.LogGroup(this, 'ReportsLogGroup', {
+            logGroupName: '/aws/lambda/cpak-reports-api',
+            retention: logs.RetentionDays.ONE_WEEK,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+        });
+
         const reportsLambda = new lambda.Function(this, 'ReportsApiLambda', {
             functionName: 'cpak-reports-api',
             runtime: lambda.Runtime.PYTHON_3_10,
@@ -105,6 +112,7 @@ export class TrainingStack extends cdk.Stack {
                 S3_BUCKET: bucket.bucketName,
                 S3_PREFIX: 'reports',
             },
+            logGroup: reportsLogGroup,
         });
 
         bucket.grantRead(reportsLambda, 'reports/*');

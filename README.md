@@ -158,9 +158,9 @@ Select option **1) Inference** to deploy the inference application (infrastructu
 
 | Service                      | Estimated Cost | Notes                              |
 |:-----------------------------|---------------:|:-----------------------------------|
-| SageMaker (ml.g4dn.12xlarge) |         ~$2.45 | Per 30-minute training run         |
+| SageMaker (ml.g4dn.xlarge) |         ~$0.86 | Per 70-minute training job         |
 | S3                           |        <$0.10  | Training data and model storage    |
-| **Total**                    |     **~$2.50** |                                    |
+| **Total**                    |     **~$0.91** |                                    |
 
 ## Inference Application
 

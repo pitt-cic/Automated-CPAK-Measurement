@@ -1,0 +1,14 @@
+# CPAK Training Dependencies
+
+# Core ML
+torch>=2.0.0
+onnx>=1.14.0
+onnxscript>=0.7.0
+
+# Annotation tools
+pillow>=10.0.0
+opencv-python>=4.5.0
+numpy>=1.26.0
+
+# AWS SageMaker
+sagemaker>=2.200.0,<3.0.0
