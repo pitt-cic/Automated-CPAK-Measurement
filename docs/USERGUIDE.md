@@ -49,9 +49,6 @@ source venv/bin/activate  # macOS/Linux
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Create required directories
-mkdir -p data/toBeAnnotated data/output data/skipped
 ```
 
 ### Place Your Images

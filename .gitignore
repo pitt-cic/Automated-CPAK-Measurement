@@ -33,3 +33,9 @@ DEVELOPER_GUIDE.md
 # Models (anywhere in repo)
 **/models/*
 !**/models/.gitkeep
+
+# Annotation data folders (keep folders, ignore contents)
+/training/annotate/data/toBeAnnotated/*
+/training/annotate/data/output/*
+/training/annotate/data/skipped/*
+!/training/annotate/data/*/.gitkeep
