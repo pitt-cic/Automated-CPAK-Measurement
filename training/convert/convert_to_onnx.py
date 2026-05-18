@@ -1,18 +1,20 @@
 """
 Convert PyTorch U-Net model to ONNX format.
 
-Run this locally once:
+Run from this directory:
     python convert_to_onnx.py
 
-Requires torch installed locally.
+Requires torch and onnx installed (included in training/requirements.txt).
 """
 
+import os
 import sys
 from pathlib import Path
 
 # Add training folder to path for model import
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import onnx
 import torch
 from model import UNetWithIntermediateSupervision
 
@@ -20,7 +22,7 @@ MODEL_PATH = "./models/unet.pt"
 ONNX_PATH = "./models/unet.onnx"
 
 # Load checkpoint and extract args
-checkpoint = torch.load(MODEL_PATH, map_location="cpu")
+checkpoint = torch.load(MODEL_PATH, map_location="cpu", weights_only=False)
 args = checkpoint.get("args", {})
 
 width = args.get("width", 384)
@@ -67,8 +69,16 @@ torch.onnx.export(
 
 print(f"Exported to {ONNX_PATH}")
 
-# Verify the export
-import onnx
+# Re-save as single file to avoid external data format issues
+# (PyTorch 2.2+ with newer ONNX can split large models into .onnx + .onnx.data)
 onnx_model = onnx.load(ONNX_PATH)
 onnx.checker.check_model(onnx_model)
-print("ONNX model verified successfully")
+onnx.save_model(onnx_model, ONNX_PATH, save_as_external_data=False)
+
+# Clean up any .data file that may have been created
+data_file = ONNX_PATH + ".data"
+if os.path.exists(data_file):
+    os.remove(data_file)
+    print(f"Removed external data file: {data_file}")
+
+print("ONNX model exported and verified successfully")
